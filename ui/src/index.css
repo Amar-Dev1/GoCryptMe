@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #151b33;
+  --color-secondary: #000000;
+  --color-light-gray: #9ea1b5;
+  --color-dark-gray: #545454;
+  --color-btn: #be73ed;
+}
+body {
+  background-color: var(--color-primary);
+  color: var(--color-light-gray);
+  overflow: hidden;
+}
+button {
+  cursor: pointer;
+}
+input {
+  padding: 15px 22px;
+  border-radius: 10px;
+  outline: 1px solid var(--color-dark-gray);
+  color: var(--color-light-gray);
+  transition: outline 0.1s ease-in-out;
+  font-size: 14px;
+}
+input:focus {
+  outline: 3px solid var(--color-btn) !important;
+  border: none !important;
+}
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.grid .col {
+  height: fit-content !important;
+}

@@ -1,0 +1,18 @@
+[
+  { "id": 1, "title": "Facebook", "img": "imgs/facebook.png" },
+  { "id": 2, "title": "Google", "img": "imgs/google.png" },
+  { "id": 3, "title": "Gmail", "img": "imgs/gmail.png" },
+  { "id": 4, "title": "X (twitter)", "img": "imgs/X.png" },
+  { "id": 5, "title": "linkedin", "img": "imgs/linkedin.png" },
+  { "id": 6, "title": "instagram", "img": "imgs/instagram.png" },
+  { "id": 7, "title": "threads", "img": "imgs/threads.png" },
+  { "id": 8, "title": "discord", "img": "imgs/discord.png" },
+  { "id": 9, "title": "reddit", "img": "imgs/reddit.png" },
+  { "id": 10, "title": "tiktok", "img": "imgs/tiktok.png" },
+  { "id": 11, "title": "snapchat", "img": "imgs/snapchat.png" },
+  { "id": 12, "title": "pinterest", "img": "imgs/pinterest.png" },
+  { "id": 13, "title": "netflix", "img": "imgs/netflix.png" },
+  { "id": 14, "title": "Github", "img": "imgs/github.png" },
+  { "id": 15, "title": "Microsoft", "img": "imgs/microsoft.png" },
+  { "id": 16, "title": "Other", "img": "imgs/other.png" }
+]
