@@ -1,3 +1,5 @@
+import { encryptPassword } from "../utils/Encryp";
+
 export const deriveKey = async (masterPassword: string, salt: Uint8Array) => {
   const pwUtf8 = new TextEncoder().encode(masterPassword);
   const keyMaterial = await crypto.subtle.importKey(
@@ -27,30 +29,21 @@ export const encryptAndSave = async (
 ) => {
   const { name, password, platform } = formData;
 
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const key = await deriveKey(masterPassword, salt);
-  const encrypted = await crypto.subtle.encrypt(
-    { name: "AES-GCM", iv },
-    key,
-    new TextEncoder().encode(password)
-  );
+ const encryptedPassword = await encryptPassword(masterPassword, password);
 
   const vault = JSON.parse(localStorage.getItem("vault") || "{}");
 
-  if (!vault[platform]) {
-    vault[platform] = [];
+const platformKey = platform.name;
+
+  if (!vault[platformKey]) {
+    vault[platformKey] = [];
   }
 
-  vault[platform].push({
+  vault[platformKey].push({
     name,
     platformName: platform?.name,
     img: platform?.img,
-    encryptedPassword: {
-      salt: btoa(String.fromCharCode(...salt)),
-      iv: btoa(String.fromCharCode(...iv)),
-      ciphertext: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
-    },
+    encryptedPassword,
   });
 
   localStorage.setItem("vault", JSON.stringify(vault));
@@ -78,4 +71,46 @@ export const retrieveAndDecrypt = async (
   );
 
   return new TextDecoder().decode(decrypted);
+};
+
+export const editAndSave = async (
+  masterPassword: string,
+  platform: any,
+  oldName: string,
+  newName: string,
+  newPassword: string
+) => {
+  const vault = JSON.parse(localStorage.getItem("vault") || "{}");
+
+  if (!vault[platform]) {
+    console.error("No passwords found for this platform.");
+    return;
+  }
+
+  const entries = vault[platform];
+  const index = entries.findIndex((entry: any) => entry.name === oldName);
+
+  if (index === -1) {
+    console.error("Password entry not found.");
+    return;
+  }
+
+  const encryptedPassword = await encryptPassword(masterPassword, newPassword);
+
+  entries[index] = {
+    ...entries[index],
+    name: newName,
+    encryptedPassword,
+  };
+
+  localStorage.setItem("vault", JSON.stringify(vault));
+};
+
+export const deleteEntry = (platform: any, name: string) => {
+  const vault = JSON.parse(localStorage.getItem("vault") || "{}");
+  if (!vault[platform]) return;
+
+  vault[platform] = vault[platform].filter((entry: any) => entry.name !== name);
+
+  localStorage.setItem("vault", JSON.stringify(vault));
 };

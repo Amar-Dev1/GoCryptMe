@@ -2,7 +2,11 @@ import "./styles.css";
 import GlobalDialog from "../../Shared/ui/GlobalDialog";
 import { useEffect, useState } from "react";
 import { CheckCheck, Copy } from "lucide-react";
-import { retrieveAndDecrypt } from "../../Shared/handlers/EncryptPass";
+import {
+  deleteEntry,
+  editAndSave,
+  retrieveAndDecrypt,
+} from "../../Shared/handlers/EncryptPass";
 import imgsMap from "../AddPassword/platformsData/imgsMap";
 
 const index = () => {
@@ -11,24 +15,55 @@ const index = () => {
   const [editMode, setEditMode] = useState(false);
   const [result, setResult] = useState<{} | any>({});
   const [copied, setCopied] = useState(false);
-
-  function getVault() {
-    return JSON.parse(localStorage.getItem("vault") || "{}");
-  }
   const [selectedPassword, setSelectedPassword] = useState<string | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
 
-  async function handleDecrypt(entry: any) {
+  const [formData, setFormData] = useState({
+    name: "",
+    password: "",
+  });
+  function getVault() {
+    return JSON.parse(localStorage.getItem("vault") || "{}");
+  }
+
+  const handleDecrypt = async (entry: any)=> {
     const decryptedPass = await retrieveAndDecrypt(
       "amar",
       entry.encryptedPassword
     );
     setSelectedPassword(decryptedPass);
     setSelectedEntry(entry);
+    setFormData({
+      name: entry.name,
+      password: decryptedPass,
+    });
     setShowDialog(true);
   }
 
+  const handleEdits = async () => {
+  await editAndSave(
+      "amar",
+      selectedEntry.platformName,
+      selectedEntry.name,
+      formData.name,
+      formData.password
+    );
+    const result = getVault();
+    setResult(result);
+    setShowDialog(false);
+    setEditMode(false)
+  };
+
+const handleDelete = () => {
+  deleteEntry(selectedEntry.platformName, selectedEntry.name);
+  const result = getVault();
+  setResult(result);
+  setShowDialog(false);
+  setShowDeleteDialog(false);
+};
+
   useEffect(() => {
+    setCopied(false);
     const result = getVault();
     setResult(result);
   }, []);
@@ -48,41 +83,39 @@ const index = () => {
           {Object.keys(result).map((platform) =>
             Array.isArray(result[platform]) ? (
               result[platform].map((entry: any, index: number) => (
-                <>
-                  <tr key={index}>
-                    <td className="w-[10%]">
-                      <div className="flex justify-center flex-col items-center gap-4">
-                        <img
-                          src={imgsMap[entry.img] || entry.img}
-                          alt=""
-                          className="w-[35px] h-[35px] rounded-full"
-                        />
-                        <span>{entry.platform}</span>
-                      </div>
-                    </td>
-                    <td className="w-[40%]">
-                      <div className="">
-                        <span className="">{entry.name}</span>
-                      </div>
-                    </td>
-                    <td className="w-[30%]">
-                      <div className="w-full h-full bg-secondary rounded-xl outline outline-dark-gray p-2">
-                        **************
-                      </div>
-                    </td>
-                    <td className="w-[20%]">
-                      <button
-                        className="btn-details"
-                        onClick={() => handleDecrypt(entry)}
-                      >
-                        See Details
-                      </button>
-                    </td>
-                  </tr>
-                </>
+                <tr key={index}>
+                  <td className="w-[10%]">
+                    <div className="flex justify-center flex-col items-center gap-4">
+                      <img
+                        src={imgsMap[entry.img] || entry.img}
+                        alt=""
+                        className="w-[35px] h-[35px] rounded-full"
+                      />
+                      <span>{entry.platform}</span>
+                    </div>
+                  </td>
+                  <td className="w-[40%]">
+                    <div className="">
+                      <span className="">{entry.name}</span>
+                    </div>
+                  </td>
+                  <td className="w-[30%]">
+                    <div className="bg-secondary rounded-xl outline outline-dark-gray p-5">
+                      **************
+                    </div>
+                  </td>
+                  <td className="w-[20%]">
+                    <button
+                      className="btn-details"
+                      onClick={() => handleDecrypt(entry)}
+                    >
+                      See Details
+                    </button>
+                  </td>
+                </tr>
               ))
             ) : (
-              <div>no passwords </div>
+              <div className="bg-red-500 text-white">no passwords </div>
             )
           )}
         </tbody>
@@ -112,17 +145,25 @@ const index = () => {
           <div className="form-group w-[50%] mt-8">
             <label className="">Name : </label>
             <input
+              name="name"
               className="bg-secondary p-2 px-6 outline outline-dark-gray rounded-lg"
-              value={selectedEntry && selectedEntry.name!}
+              value={formData.name}
               readOnly={!editMode ? true : false}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
             />
           </div>
           <div className="relative form-group w-[50%] mt-4">
             <label className="">Password : </label>
             <input
+              name="password"
               className="bg-secondary p-2 px-6 outline outline-dark-gray rounded-lg"
-              value={selectedPassword || ""}
+              value={formData.password!}
               readOnly={!editMode ? true : false}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
             <button className="absolute right-4 bottom-[10px]">
               {copied ? (
@@ -131,10 +172,22 @@ const index = () => {
                 <Copy
                   onClick={() => {
                     navigator.clipboard.writeText(selectedPassword!);
-                    setCopied(!copied);
+                    setCopied(true);
+                    setTimeout(() => {
+                      setCopied(false);
+                    }, 2000);
                   }}
                 />
               )}
+              <div className="relative">
+                <p
+                  className={`absolute -top-[50px] -left-[7px] w-fit text-green-300 scale-0 opacity-0 transition-all duration-300 ${
+                    copied ? "scale-100 opacity-100" : ""
+                  }`}
+                >
+                  Copied
+                </p>
+              </div>
             </button>
           </div>
           <div className="mt-5 flex items-center justify-around">
@@ -155,12 +208,21 @@ const index = () => {
               </>
             ) : (
               <>
-                <button className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-red-500">
+                <button
+                  className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-btn"
+                  onClick={handleEdits}
+                >
                   Save
                 </button>
                 <button
                   className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-btn"
-                  onClick={() => setEditMode(!editMode)}
+                  onClick={() => {
+                    setEditMode(!editMode);
+                    setFormData({
+                      name: selectedEntry?.name,
+                      password: selectedPassword!,
+                    });
+                  }}
                 >
                   Cancel
                 </button>
@@ -180,8 +242,7 @@ const index = () => {
           You will delete this password PERMENENTLY ?!
         </h2>
         <div className=" flex items-center justify-around">
-          <button className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-red-500">
-            Delete
+          <button className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-red-500" onClick={handleDelete}>           Delete
           </button>
           <button
             className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-btn"
