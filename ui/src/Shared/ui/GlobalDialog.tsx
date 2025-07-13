@@ -14,9 +14,10 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  className?:string;
 }
 
-const GlobalDialog = ({ isOpen, onClose, children }: Props) => {
+const GlobalDialog = ({ isOpen, onClose, children, className }: Props) => {
   return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog
@@ -49,7 +50,7 @@ const GlobalDialog = ({ isOpen, onClose, children }: Props) => {
             leaveTo="opacity-0 scale-90"
           >
             <DialogPanel
-              className="relative flex flex-col min-w-1/2 max-w-[80%] min-h-1/2 max-h-[80%] rounded-2xl bg-primary p-6 border border-dark-gray shadow-lg"
+              className={`relative flex flex-col min-w-1/2 max-w-[80%] min-h-1/2 max-h-[80%] rounded-2xl bg-primary p-6 border border-dark-gray shadow-lg ${className}`}
               as={"div"}
             >
               {children}

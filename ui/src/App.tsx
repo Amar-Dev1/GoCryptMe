@@ -3,7 +3,7 @@ import MainLayout from "./Shared/ui/MainLayout";
 import AddPassword from './features/AddPassword'
 import About from './features/About'
 import Catalog from './features/Catalog'
-import ManagePasswords from './features/ManagerPasswords'
+import ManagePasswords from './features/ManagePasswords'
 
 function App() {
   return (

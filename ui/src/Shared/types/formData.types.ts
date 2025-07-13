@@ -1,11 +1,8 @@
-export interface IPlatform {
-  id: number;
-  title: string;
-  img: string;
-}
-
 export interface IFormData {
-  title: string;
+  name: string;
   password: string;
-  platform: IPlatform;
+  platform: {
+    name: string;
+    img: string;
+  } | any;
 }

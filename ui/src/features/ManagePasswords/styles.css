@@ -1,0 +1,48 @@
+.password-table {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  color: white;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow-y: auto !important;
+}
+.password-table th {
+  border-bottom: 1px dashed var(--color-dark-gray);
+  background-color: #1e1e1e;
+}
+.password-table th,
+.password-table td {
+  padding: 12px;
+  text-align: left;
+  text-align: center !important;
+}
+
+.password-table td {
+  border: 1px solid var(--color-dark-gray);
+  background-color: var(--color-primary);
+  margin: auto 0;
+}
+.password-table tr:last-child td:first-child {
+  border-bottom-left-radius: 16px;
+}
+.password-table tr:last-child td:last-child {
+  border-bottom-right-radius: 16px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.btn-details {
+  background-color: #e879f9;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  padding: 5px 12px;
+  cursor: pointer;
+}

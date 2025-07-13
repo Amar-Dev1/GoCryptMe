@@ -6,7 +6,7 @@ interface IWrapperProps {
 }
 const Wrapper: React.FC<IWrapperProps> = ({ children,className }) => {
   return (
-    <div className={`main-wrapper bg-secondary p-9 rounded-4xl border border-dark-gray overflow-hidden ${className}`}>{children}</div>
+    <div className={`main-wrapper bg-secondary p-9 rounded-4xl border border-dark-gray overflow-y-auto ${className}`}>{children}</div>
   );
 };
 

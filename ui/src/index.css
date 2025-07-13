@@ -10,7 +10,7 @@
 body {
   background-color: var(--color-primary);
   color: var(--color-light-gray);
-  overflow: hidden;
+  scroll-behavior: smooth;
 }
 button {
   cursor: pointer;

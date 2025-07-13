@@ -26,12 +26,14 @@ import platformsData from "./platformsData/platforms.json";
 import imgsMap from "./platformsData/imgsMap";
 import GlobalDialog from "../../Shared/ui/GlobalDialog";
 import { useNavigate } from "react-router-dom";
-import type { IPlatform } from "../../Shared/types/formData.types";
+import type { IFormData } from "../../Shared/types/formData.types";
+import { encryptAndSave } from "../../Shared/handlers/EncryptPass";
+import otherImg from "../AddPassword/platformsData/imgs/other.png";
 
 const index = () => {
   const navigate = useNavigate();
 
-  const [clicked, setClicked] = useState<boolean | null>(true);
+  const [clicked, setClicked] = useState<boolean | null>(false);
   const [query, setQuery] = useState<string>("");
   const [selectedPlatform, setSelectedPlatform] = useState(platformsData[0]);
   const [showPass, setShowPass] = useState(false);
@@ -40,19 +42,20 @@ const index = () => {
   const [successfulSumbit, setSuccessfulSubmit] = useState<boolean | null>(
     null
   );
+
   const otherInputRef = useRef<HTMLInputElement | null>(null);
 
   const filterdData =
     query === ""
       ? platformsData
       : platformsData.filter((platform) => {
-          return platform.title.toLowerCase().includes(query?.toLowerCase());
+          return platform.name.toLowerCase().includes(query?.toLowerCase());
         });
 
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState<IFormData>({
+    name: "",
     password: "",
-    platform: "",
+    platform: null,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,20 +66,34 @@ const index = () => {
       return;
     }
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
   };
 
-  const handlePlatformChange = (platform: IPlatform) => {
+  const handlePlatformChange = (platform: any) => {
     setSelectedPlatform(platform);
-    if (platform.title !== "Other") {
-      setFormData((prev) => ({ ...prev, platform: platform.title }));
+    setQuery(platform.name);
+
+    if (platform.name !== "Other") {
+      setFormData((prev) => ({
+        ...prev,
+        platform: {
+          name: platform.name,
+          img: platform.img,
+        },
+      }));
     } else {
-      setFormData((prev) => ({ ...prev, platform: "" })); // Clear until user types
+      setFormData((prev) => ({
+        ...prev,
+        platform: {
+          name: "",
+          img: otherImg,
+        },
+      }));
     }
   };
 
   useEffect(() => {
-    if (selectedPlatform?.title === "Other") {
+    if (selectedPlatform?.name === "Other") {
       setShowOtherInput(true);
     } else {
       setShowOtherInput(false);
@@ -84,15 +101,20 @@ const index = () => {
   }, [selectedPlatform]);
 
   const isDisabled =
-    !formData.title.trim() ||
+    !formData.name.trim() ||
     !formData.password.trim() ||
     (showOtherInput
-      ? !otherInputRef.current?.value.trim()
-      : !formData.platform.trim());
+      ? !formData.platform?.name.trim()
+      : !formData.platform?.name.trim());
 
-  const HandleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const HandleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSuccessfulSubmit(false);
+    try {
+      await encryptAndSave("amar", formData);
+      setSuccessfulSubmit(true);
+    } catch (err) {
+      console.error(err || "an error occured !");
+    }
   };
 
   return (
@@ -123,9 +145,9 @@ const index = () => {
           <div className="form-group col-span-6 h-fit">
             <label htmlFor="">
               <Tag className="text-light-gray size-5" />
-              Password title
+              Password name
             </label>
-            <input type="text" name="title" required onChange={handleChange} />
+            <input type="text" name="name" required onChange={handleChange} />
           </div>
           <div className="form-group col-span-6 h-fit relative">
             <label htmlFor="">
@@ -152,7 +174,7 @@ const index = () => {
 
           <div className="form-group col col-span-12 flex-row! items-center  z-50 overflow-hidden!">
             <Combobox
-              value={selectedPlatform}
+              value={formData.platform}
               onChange={handlePlatformChange}
               onClose={() => setQuery("")}
             >
@@ -162,9 +184,9 @@ const index = () => {
                 </label>
 
                 <ComboboxInput
-                  displayValue={(platform: any) => platform?.title!}
+                  displayValue={(platform: any) => platform?.name || ""}
                   name="platform"
-                  onChange={handleChange}
+                  onChange={(e) => setQuery(e.target.value)}
                   className={clsx(
                     "grow rounded-xl bg-white/5 text-sm/6 text-white m-1 border border-dark-gray",
                     "focus:not-data-focus:outline-none data-focus:outline-2 data-focus:outline-white/15"
@@ -194,7 +216,7 @@ const index = () => {
                         className="w-[30px] h-[30px] rounded-full mr-auto"
                       />
                       <small className="font-bold text-[12px] mr-auto">
-                        {platformsData[platformsData.length - 1].title}
+                        {platformsData[platformsData.length - 1].name}
                       </small>
                     </div>
                   </ComboboxOption>
@@ -213,7 +235,7 @@ const index = () => {
                           className="w-[30px] h-[30px] rounded-full mr-auto"
                         />
                         <small className="font-bold text-[12px] mr-auto">
-                          {platform.title}
+                          {platform.name}
                         </small>
                       </div>
                     </ComboboxOption>
@@ -234,9 +256,12 @@ const index = () => {
                   className="w-[99%]"
                   ref={otherInputRef}
                   onChange={(e) =>
-                    setFormData((prev) => ({
+                    setFormData((prev: any) => ({
                       ...prev,
-                      platform: e.target.value,
+                      platform: {
+                        name: e.target.value,
+                        img: otherImg,
+                      },
                     }))
                   }
                 />
@@ -306,9 +331,8 @@ const index = () => {
             </div>
           </GlobalDialog>
         )}
-        {
-          !successfulSumbit &&
-           <GlobalDialog
+        {!successfulSumbit && (
+          <GlobalDialog
             isOpen={showDialog}
             onClose={() => setShowDialog(!showDialog)}
           >
@@ -320,7 +344,9 @@ const index = () => {
                     strokeWidth={"1.5px"}
                   />
                 </span>
-                <p className="text-center mt-3">An error occured.Please try agin !</p>
+                <p className="text-center mt-3">
+                  An error occured.Please try agin !
+                </p>
               </div>
               <button
                 className="bg-btn text-white font-bold py-2 px-8 rounded-xl"
@@ -333,7 +359,7 @@ const index = () => {
               </button>
             </div>
           </GlobalDialog>
-        }
+        )}
       </div>
     </div>
   );
