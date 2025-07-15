@@ -1,26 +1,11 @@
 {
   "name": "gocryptme",
   "version": "1.0.0",
-  "description": "Encrypt your passwords offline with GoCryptMe!",
+  "description": "",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build": "npx electron-builder"
-  },
-  "build": {
-    "appId": "com.AmarDev1.GoCryptMe",
-    "productName": "GoCryptMe",
-    "linux": {
-      "target": ["AppImage", "deb"]
-    },
-    "win": {
-      "target": "nsis",
-      "sign":false
-    },
-    "mac": {
-      "target": ["dmg", "zip"],
-      "snap":null
-    }
   },
   "repository": {
     "type": "git",

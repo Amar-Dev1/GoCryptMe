@@ -15,64 +15,63 @@ function createWindow() {
   });
   win.maximize();
   win.show();
-  win.loadFile(path.join(__dirname, 'dist/index.html'))
+  win.loadFile(path.join(__dirname, "ui_dist/index.html"));
 
   const template = [
     {
-      label: 'File',
-      submenu: [
-        { role: 'quit', label: 'Exit' }
-      ]
+      label: "File",
+      submenu: [{ role: "quit", label: "Exit" }],
     },
     {
-      label: 'View',
+      label: "View",
       submenu: [
-        { role: 'reload' },
-        { role: 'resetZoom' },
-        { role: 'zoomIn' },
-        { role: 'zoomOut' },
-        { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
+        { role: "reload" },
+        { role: "resetZoom" },
+        { role: "zoomIn" },
+        { role: "zoomOut" },
+        { type: "separator" },
+        { role: "togglefullscreen" },
+      ],
     },
     {
-      label: 'About',
+      label: "About",
       submenu: [
         {
-          label: 'Contribute',
+          label: "Contribute",
           click: () => {
-            shell.openExternal('https://github.com/Amar-Dev1/GoCryptMe#contributing');
-          }
+            shell.openExternal(
+              "https://github.com/Amar-Dev1/GoCryptMe#contributing"
+            );
+          },
         },
         {
-          label: 'Repository',
+          label: "Repository",
           click: () => {
-            shell.openExternal('https://github.com/Amar-Dev1/GoCryptMe');
-          }
+            shell.openExternal("https://github.com/Amar-Dev1/GoCryptMe");
+          },
         },
         {
-          label: 'Author',
+          label: "Author",
           click: () => {
-            shell.openExternal('https://github.com/Amar-Dev1');
-          }
-        }
-      ]
+            shell.openExternal("https://github.com/Amar-Dev1");
+          },
+        },
+      ],
     },
     {
-      label: 'Help',
+      label: "Help",
       submenu: [
         {
-          label: 'Contact',
+          label: "Contact",
           click: () => {
-            shell.openExternal('mailto:amarofficial249@gmail.com');
-          }
-        }
-      ]
-    }
+            shell.openExternal("mailto:amarofficial249@gmail.com");
+          },
+        },
+      ],
+    },
   ];
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
-
 }
 
 app.whenReady().then(() => {
