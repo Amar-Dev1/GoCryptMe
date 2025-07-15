@@ -1,0 +1,28 @@
+{
+  "name": "gocryptme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "npx electron-builder"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amar-Dev1/GoCryptMe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Amar-Dev1/GoCryptMe/issues"
+  },
+  "homepage": "https://github.com/Amar-Dev1/GoCryptMe#readme",
+  "dependencies": {
+    "electron-store": "^10.1.0"
+  },
+  "devDependencies": {
+    "electron": "^37.2.1",
+    "electron-builder": "^26.0.12"
+  }
+}

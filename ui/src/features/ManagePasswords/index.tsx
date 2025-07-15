@@ -1,17 +1,21 @@
 import "./styles.css";
 import GlobalDialog from "../../Shared/ui/GlobalDialog";
-import { useEffect, useState } from "react";
-import { CheckCheck, Copy } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { CheckCheck, Copy, Trash2 } from "lucide-react";
 import {
   deleteEntry,
   editAndSave,
   retrieveAndDecrypt,
 } from "../../Shared/handlers/EncryptPass";
 import imgsMap from "../AddPassword/platformsData/imgsMap";
+import { useNavigate } from "react-router-dom";
 
 const index = () => {
+const navigate = useNavigate();
+
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeletAlleDialog, setShowDeleteAllDialog] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [result, setResult] = useState<{} | any>({});
   const [copied, setCopied] = useState(false);
@@ -26,7 +30,7 @@ const index = () => {
     return JSON.parse(localStorage.getItem("vault") || "{}");
   }
 
-  const handleDecrypt = async (entry: any)=> {
+  const handleDecrypt = async (entry: any) => {
     const decryptedPass = await retrieveAndDecrypt(
       "amar",
       entry.encryptedPassword
@@ -38,10 +42,10 @@ const index = () => {
       password: decryptedPass,
     });
     setShowDialog(true);
-  }
+  };
 
   const handleEdits = async () => {
-  await editAndSave(
+    await editAndSave(
       "amar",
       selectedEntry.platformName,
       selectedEntry.name,
@@ -51,26 +55,30 @@ const index = () => {
     const result = getVault();
     setResult(result);
     setShowDialog(false);
-    setEditMode(false)
+    setEditMode(false);
   };
 
-const handleDelete = () => {
-  deleteEntry(selectedEntry.platformName, selectedEntry.name);
-  const result = getVault();
-  setResult(result);
-  setShowDialog(false);
-  setShowDeleteDialog(false);
-};
+  const handleDelete = () => {
+    deleteEntry(selectedEntry.platformName, selectedEntry.name);
+    const result = getVault();
+    setResult(result);
+    setShowDialog(false);
+    setShowDeleteDialog(false);
+  };
+
+  const handleDeleteAll =  () => {
+     localStorage.removeItem("vault");
+    navigate('/add-password');
+  };
 
   useEffect(() => {
     setCopied(false);
     const result = getVault();
     setResult(result);
-    // localStorage.removeItem('vault')
   }, []);
 
   return (
-    <>
+    <div className="relative">
       <table className="password-table">
         <thead>
           <tr>
@@ -81,43 +89,76 @@ const handleDelete = () => {
           </tr>
         </thead>
         <tbody className="h-full overflow-y-auto">
-          {Object.keys(result).map((platform) =>
-            Array.isArray(result[platform]) ? (
-              result[platform].map((entry: any, index: number) => (
-                <tr key={index}>
-                  <td className="w-[10%]">
-                    <div className="flex justify-center flex-col items-center gap-4">
-                      <img
-                        src={imgsMap[entry.img] || entry.img}
-                        alt=""
-                        className="w-[35px] h-[35px] rounded-full"
-                      />
-                      <span>{entry.platform}</span>
+          {Object.keys(result).length === 0 ||
+          Object.values(result).every(
+            (entries) => Array.isArray(entries) && entries.length === 0
+          ) ? (
+            <tr>
+              <td colSpan={4}>
+                <div className="w-full h-[69vh] flex justify-center items-center">
+                  <h3 className="opacity-75 font-bold">
+                    No passwords added. Try adding one
+                  </h3>
+                </div>
+              </td>
+            </tr>
+          ) : (
+            <>
+              {Object.keys(result).map((platform) =>
+                result[platform].map((entry: any, index: any) => (
+                  <tr key={`${platform}-${index}`}>
+                    <td className="w-[10%]">
+                      <div className="flex justify-center flex-col items-center gap-4">
+                        <img
+                          src={imgsMap[entry.img] || entry.img}
+                          alt=""
+                          className="w-[35px] h-[35px] rounded-full"
+                        />
+                        <span>{entry.platform}</span>
+                      </div>
+                    </td>
+                    <td className="w-[40%]">
+                      <div>
+                        <span>{entry.name}</span>
+                      </div>
+                    </td>
+                    <td className="w-[30%]">
+                      <div className="bg-secondary rounded-xl outline outline-dark-gray p-5">
+                        **************
+                      </div>
+                    </td>
+                    <td className="w-[20%]">
+                      <button
+                        className="btn-details"
+                        onClick={() => handleDecrypt(entry)}
+                      >
+                        See Details
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+              {Object.keys(result).some(
+                (platform) =>
+                  Array.isArray(result[platform]) && result[platform].length > 0
+              ) && (
+                <tr>
+                  <td colSpan={4}>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <button
+                        className="flex items-center gap-3 bg-red-500 p-2 rounded-lg"
+                        onClick={() =>
+                          setShowDeleteAllDialog(!showDeletAlleDialog)
+                        }
+                      >
+                        <Trash2 className="size-6 text-white" />
+                        <h3 className="text-white">Delete all of them</h3>
+                      </button>
                     </div>
-                  </td>
-                  <td className="w-[40%]">
-                    <div className="">
-                      <span className="">{entry.name}</span>
-                    </div>
-                  </td>
-                  <td className="w-[30%]">
-                    <div className="bg-secondary rounded-xl outline outline-dark-gray p-5">
-                      **************
-                    </div>
-                  </td>
-                  <td className="w-[20%]">
-                    <button
-                      className="btn-details"
-                      onClick={() => handleDecrypt(entry)}
-                    >
-                      See Details
-                    </button>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <div className="bg-red-500 text-white">no passwords </div>
-            )
+              )}
+            </>
           )}
         </tbody>
       </table>
@@ -243,7 +284,12 @@ const handleDelete = () => {
           You will delete this password PERMENENTLY ?!
         </h2>
         <div className=" flex items-center justify-around">
-          <button className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-red-500" onClick={handleDelete}>           Delete
+          <button
+            className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-red-500"
+            onClick={handleDelete}
+          >
+            {" "}
+            Delete
           </button>
           <button
             className="w-[40%] py-2 px-5 font-bold text-white rounded-lg bg-btn"
@@ -253,7 +299,34 @@ const handleDelete = () => {
           </button>
         </div>
       </GlobalDialog>
-    </>
+
+      {/* "Delete all" Dialog */}
+      <GlobalDialog
+        className="min-w-[5%] max-w-[30%] min-h-[5%] max-h-[25%] "
+        isOpen={showDeletAlleDialog}
+        onClose={() => setShowDeleteAllDialog(false)}
+      >
+        <div className="flex flex-col justify-center items-center py-8 px-4 gap-7">
+          <h3 className="font-bold text-lg">
+            Are you sure ?!. You will delete all your vault content
+          </h3>
+          <div className="flex items-center gap-4">
+            <button
+              className="py-1 px-4 text-lg text-white bg-red-500 rounded-lg font-bold"
+              onClick={()=>handleDeleteAll()}
+            >
+              Delete
+            </button>
+            <button
+              className="py-1 px-4 text-lg text-white bg-btn rounded-lg font-bold"
+              onClick={() => setShowDeleteAllDialog(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </GlobalDialog>
+    </div>
   );
 };
 

@@ -23,7 +23,7 @@ const index = () => {
             Current version : <span className="font-bold">{import.meta.env.VITE_APP_VERSION}</span>{" "}
           </li>
           <li className="flex items-center gap-4">
-            License : <span className="font-bold">{import.meta.env.VITE_APP_LICENSE}</span>
+            License : <span className="font-bold">{import.meta.env.VITE_APP_LICENSE} License</span>
           </li>
           <li className="flex items-center gap-4">
             Supported systems : <span className="font-bold">Windows, Linux, MAC</span>
@@ -34,13 +34,7 @@ const index = () => {
         <h4 className="border-dashed border-b-2 border-b-dark-gray text-center mb-5 pb-2">
           Author
         </h4>
-        <a
-          href="https://github.com/Amar-Dev1"
-          className="flex items-center gap-4 font-bold"
-        >
-          <img src={gihubImg} alt="" className="max-w-[30px]" />
-          Amar Yasir
-        </a>
+       <h5 className="text-center">Amar Yasir</h5>
       </div>
     </div>
   );

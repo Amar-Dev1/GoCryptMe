@@ -10,10 +10,16 @@ const FirstLogin = () => {
   const [showToolTip, setShowToolTip] = useState(false);
 
   const handleCreateKey = async () => {
-     if (!masterKey) { alert("Please enter a master key."); return; }
-  await saveMasterkeyCheck(masterKey as string);
-  sessionStorage.setItem("loggedInUser", "true");
-  navigate("/add-password");
+    if (!masterKey) {
+      alert("Please enter a master key.");
+      return;
+    }
+    await saveMasterkeyCheck(masterKey as string);
+    sessionStorage.setItem("loggedInUser", "true");
+    setTimeout(() => {
+      navigate("/add-password");
+      window.location.reload();
+    }, 500);
   };
 
   return (

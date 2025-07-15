@@ -3,16 +3,20 @@ import Wrapper from "../../../Shared/Components/Wrapper";
 import { useState } from "react";
 import { retrieveAndDecrypt } from "../../../Shared/handlers/EncryptPass";
 import { useNavigate } from "react-router-dom";
+import GlobalDialog from "../../../Shared/ui/GlobalDialog";
 
 const Login = () => {
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [masterKey, setMasterKey] = useState<string | number | null>(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const handleVerify = async () => {
     const encryptedCheckStr = localStorage.getItem("masterKeyCheck");
     if (!encryptedCheckStr) {
-      alert("no master key has been set yet.");
+      setDialogMessage("no master key has been set yet");
+      setShowDialog(true);
       return;
     }
     const encryptedCheck = JSON.parse(encryptedCheckStr);
@@ -24,14 +28,20 @@ const Login = () => {
       );
 
       if (decryptedCheck === "GoCryptMeCheck") {
-        alert("Master key is correct ✅");
+        setShowDialog(true);
+        setDialogMessage("Master key is correct ✅");
         sessionStorage.setItem("loggedInUser", "true");
-        navigate("/add-password");
+        setTimeout(() => {
+          navigate("/add-password");
+          window.location.reload();
+        }, 500);
       } else {
-        alert("Incorrect master key ❌");
+       setDialogMessage("Incorrect master key ❌");
+        setShowDialog(true);
       }
     } catch (error) {
-      alert("Incorrect master key ❌");
+       setDialogMessage("Incorrect master key ❌");
+        setShowDialog(true);
     }
   };
 
@@ -47,10 +57,13 @@ const Login = () => {
             Enter your Master Key
           </h3>
 
-          <form className="form-group gap-8! w-1/2 h-fit" onSubmit={(e)=>{
-            e.preventDefault();
-            handleVerify()
-          }}>
+          <form
+            className="form-group gap-8! w-1/2 h-fit"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleVerify();
+            }}
+          >
             <div className="relative w-full mx-auto">
               <input
                 type={showPass ? "text" : "password"}
@@ -70,12 +83,21 @@ const Login = () => {
                 )}
               </span>
             </div>
-            <button
-              className="text-white bg-btn rounded-xl w-fit mx-auto py-3 px-8"
-            >
+            <button className="text-white bg-btn rounded-xl w-fit mx-auto py-3 px-8">
               Verify Key
             </button>
           </form>
+          <GlobalDialog
+            isOpen={showDialog}
+            onClose={() => setShowDialog(!showDialog)}
+            className="min-w-[100px] max-w-[300px] min-h-[100px] max-h-[220px]"
+          >
+            <div className="grow p-4 flex items-center justify-center">
+              <h3 className="font-bold text-lg">
+              {dialogMessage}
+              </h3>
+            </div>
+          </GlobalDialog>
         </div>
       </Wrapper>
     </div>
