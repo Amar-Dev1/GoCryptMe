@@ -14,10 +14,12 @@
       "target": ["AppImage", "deb"]
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "sign":false
     },
     "mac": {
-      "target": ["dmg", "zip"]
+      "target": ["dmg", "zip"],
+      "snap":null
     }
   },
   "repository": {
