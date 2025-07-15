@@ -29,11 +29,11 @@ export const encryptAndSave = async (
 ) => {
   const { name, password, platform } = formData;
 
- const encryptedPassword = await encryptPassword(masterPassword, password);
+  const encryptedPassword = await encryptPassword(masterPassword, password);
 
   const vault = JSON.parse(localStorage.getItem("vault") || "{}");
 
-const platformKey = platform.name;
+  const platformKey = platform.name;
 
   if (!vault[platformKey]) {
     vault[platformKey] = [];
@@ -48,6 +48,12 @@ const platformKey = platform.name;
 
   localStorage.setItem("vault", JSON.stringify(vault));
 };
+
+export const saveMasterkeyCheck = async (masterPassword:string)=>{
+  const checkText = "GoCryptMeCheck";
+  const encryptedCheck = await encryptPassword(masterPassword, checkText);
+  localStorage.setItem("masterKeyCheck", JSON.stringify(encryptedCheck));
+}
 
 export const retrieveAndDecrypt = async (
   masterPassword: string,

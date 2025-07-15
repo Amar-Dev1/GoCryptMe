@@ -66,6 +66,7 @@ const handleDelete = () => {
     setCopied(false);
     const result = getVault();
     setResult(result);
+    // localStorage.removeItem('vault')
   }, []);
 
   return (

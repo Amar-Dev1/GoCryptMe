@@ -1,1 +1,1 @@
-# GoCryptMe (Desktop app)
+# GoCryptMe app
