@@ -1,6 +1,6 @@
 import "./styles.css";
 import GlobalDialog from "../../Shared/ui/GlobalDialog";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { CheckCheck, Copy, Trash2 } from "lucide-react";
 import {
   deleteEntry,

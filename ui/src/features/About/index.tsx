@@ -1,5 +1,4 @@
 import { images } from "../../Shared/Constants/images";
-import gihubImg from "../AddPassword/platformsData/imgs/github.png";
 
 const index = () => {
   return (
