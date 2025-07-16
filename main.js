@@ -11,7 +11,7 @@ function createWindow() {
       contextIsolation: true,
     },
 
-    icon: path.join(__dirname, "logo.png"),
+    icon: path.join(__dirname, "build/icon.png"),
   });
   win.maximize();
   win.show();
