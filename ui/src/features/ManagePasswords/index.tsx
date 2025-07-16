@@ -104,7 +104,7 @@ const navigate = useNavigate();
             </tr>
           ) : (
             <>
-              {Object.keys(result).map((platform) =>
+              {Object.keys(result).reverse().map((platform) =>
                 result[platform].map((entry: any, index: any) => (
                   <tr key={`${platform}-${index}`}>
                     <td className="w-[10%]">
