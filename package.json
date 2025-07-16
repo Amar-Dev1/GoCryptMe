@@ -31,6 +31,10 @@
   "build": {
     "appId": "com.gocryptme.app",
     "productName": "GoCryptMe",
+    "publish": {
+    "provider": "github",
+    "overwrite": true
+  },
     "directories": {
       "buildResources": "build"
     },
