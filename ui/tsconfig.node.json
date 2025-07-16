@@ -6,7 +6,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types"],
-    "types": ["node", "debug", "verror"],
+    "types": ["debug", "verror"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
