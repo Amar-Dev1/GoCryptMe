@@ -1,7 +1,7 @@
 {
   "name": "gocryptme",
   "version": "1.0.0",
-  "description": "",
+  "description": "Offline password encryption app",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/Amar-Dev1/GoCryptMe.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Amar",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Amar-Dev1/GoCryptMe/issues"
@@ -23,6 +23,21 @@
   },
   "devDependencies": {
     "electron": "^37.2.1",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.gocryptme.app",
+    "productName": "GoCryptMe",
+    "directories": {
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico",
+      "executableName": "GoCryptMe"
+    }
   }
 }
