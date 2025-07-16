@@ -1,6 +1,6 @@
 {
   "name": "gocryptme",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Offline password encryption app",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "keywords": [],
   "author": {
-    "name": "Amar Official",
+    "name": "Amar Yasir",
     "email": "amarofficial249@gmail.com"
   },
   "license": "MIT",
