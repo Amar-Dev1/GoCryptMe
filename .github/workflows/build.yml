@@ -27,9 +27,12 @@ jobs:
         with:
           node-version: 20
 
-
       - name: Install dependencies
         run: npm install
+
+      - name: Remove icon.png for macOS
+        if: matrix.os == 'macos-latest'
+        run: rm -f build/icon.png
 
       - name: Build & Package
         run: npx electron-builder --publish always
