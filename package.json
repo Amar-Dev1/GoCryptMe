@@ -38,6 +38,10 @@
       "target": "nsis",
       "icon": "build/icon.ico",
       "executableName": "GoCryptMe"
-    }
+    },"linux": {
+    "icon": "build/icon.png",
+    "target": ["AppImage", "deb"],
+    "category": "Utility"
+  }
   }
 }
