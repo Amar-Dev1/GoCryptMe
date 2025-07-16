@@ -32,8 +32,9 @@
     "appId": "com.gocryptme.app",
     "productName": "GoCryptMe",
     "publish": {
-    "provider": "github",
-    "overwrite": true
+   "provider": "github",
+      "owner": "Amar-Dev1",
+      "repo": "GoCryptMe"
   },
     "directories": {
       "buildResources": "build"
