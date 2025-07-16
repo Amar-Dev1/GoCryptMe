@@ -12,7 +12,10 @@
     "url": "git+https://github.com/Amar-Dev1/GoCryptMe.git"
   },
   "keywords": [],
-  "author": "Amar",
+  "author": {
+    "name": "Amar Official",
+    "email": "amarofficial249@gmail.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Amar-Dev1/GoCryptMe/issues"
